@@ -1,10 +1,21 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import reactLogo from './assets/react.svg'
 import viteLogo from '/vite.svg'
 import './App.css'
+import { fetchHeroes } from './services/heroesApi'
 
 function App() {
   const [count, setCount] = useState(0)
+
+  useEffect(() => {
+    fetchHeroes()
+      .then((heroes) => {
+        console.log('fetchHeroes():', heroes)
+      })
+      .catch((err) => {
+        console.error('fetchHeroes() error:', err)
+      })
+  }, [])
 
   return (
     <>
