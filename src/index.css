@@ -24,8 +24,12 @@ a:hover {
 
 body {
   margin: 0;
-  display: flex;
-  place-items: center;
+  /*
+    Queremos que el contenido empiece desde arriba y la página haga scroll normal.
+    Con `display: flex` + `place-items: center` (template de Vite) todo se centra
+    verticalmente y, cuando la pantalla se llena, lo de arriba puede verse “cortado”.
+  */
+  display: block;
   min-width: 320px;
   min-height: 100vh;
 }

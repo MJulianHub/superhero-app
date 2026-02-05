@@ -1,6 +1,5 @@
 import { useEffect, useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
+import { Alert, Card, Col, Row, Spin } from 'antd'
 import './App.css'
 import { fetchHeroes } from './services/heroesApi'
 import type { HeroSummary } from './types/hero'
@@ -9,7 +8,6 @@ import type { HeroSummary } from './types/hero'
 const PAGE_SIZE = 20
 
 function App() {
-  const [count, setCount] = useState(0)
   // Esta lista es lo que vamos a mostrar en pantalla.
   const [heroes, setHeroes] = useState<HeroSummary[]>([])
   // Esto nos sirve para mostrar un “Cargando…” mientras llega la respuesta.
@@ -72,53 +70,50 @@ function App() {
 
   return (
     <>
-      <div>
-        <a href="https://vite.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.tsx</code> and save to test HMR
-        </p>
-      </div>
+      {/* Mientras cargamos, mostramos un spinner para que el usuario sepa que la app está trabajando. */}
+      {isLoading ? (
+        <div style={{ marginTop: 16 }}>
+          <Spin size="large" tip="Cargando héroes…" />
+        </div>
+      ) : null}
 
-      {isLoading ? <p>Cargando…</p> : null}
-      {error ? <p style={{ color: 'crimson' }}>Error al cargar: {error}</p> : null}
+      {/* Si hubo un error, lo mostramos en un componente de alerta (más visible y consistente con Ant Design). */}
+      {error ? (
+        <div style={{ marginTop: 16 }}>
+          <Alert
+            type="error"
+            showIcon
+            message="Error al cargar"
+            description={error}
+          />
+        </div>
+      ) : null}
       {!isLoading && !error ? (
         <>
-          <ul style={{ listStyle: 'none', padding: 0 }}>
+          {/* Esta es la misma lista de héroes, pero presentada como tarjetas (más agradable a la vista). */}
+          {/* Le damos un margen arriba para que la primera fila no quede “cortada” o pegada al contenido superior. */}
+          <Row gutter={[16, 16]} style={{ marginTop: 16 }}>
             {paginatedHeroes.map((h) => (
-              <li
-                key={h.id}
-                style={{
-                  display: 'flex',
-                  gap: 12,
-                  alignItems: 'center',
-                  padding: '8px 0',
-                }}
-              >
-                {h.image.url ? (
-                  <img
-                    src={h.image.url}
-                    alt={h.name}
-                    width={40}
-                    height={40}
-                    style={{ borderRadius: 8, objectFit: 'cover' }}
-                    loading="lazy"
-                  />
-                ) : null}
-                <span>{h.name}</span>
-              </li>
+              <Col key={h.id} xs={24} sm={12} md={8} lg={6}>
+                <Card
+                  hoverable
+                  cover={
+                    h.image.url ? (
+                      <img
+                        src={h.image.url}
+                        alt={h.name}
+                        style={{ width: '100%', height: 180, objectFit: 'cover' }}
+                        loading="lazy"
+                      />
+                    ) : undefined
+                  }
+                >
+                  {/* Mostramos el nombre del héroe en la tarjeta */}
+                  <Card.Meta title={h.name} />
+                </Card>
+              </Col>
             ))}
-          </ul>
+          </Row>
 
           {/* Controles simples de paginación (Anterior / Siguiente) */}
           <div style={{ display: 'flex', gap: 12, alignItems: 'center' }}>
@@ -145,9 +140,6 @@ function App() {
           </div>
         </>
       ) : null}
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
     </>
   )
 }
