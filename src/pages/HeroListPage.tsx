@@ -74,7 +74,9 @@ export function HeroListPage() {
       {/* Mientras cargamos, mostramos un spinner para que el usuario sepa que la app está trabajando. */}
       {isLoading ? (
         <div style={{ marginTop: 16 }}>
-          <Spin size="large" tip="Cargando héroes…" />
+          {/* En Ant Design, `tip` solo funciona si el Spin envuelve contenido.
+              Para evitar warnings en consola, mostramos el spinner sin `tip`. */}
+          <Spin size="large" />
         </div>
       ) : null}
 
